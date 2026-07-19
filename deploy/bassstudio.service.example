@@ -1,0 +1,26 @@
+# Bass Studio - systemd 服务配置
+# 复制到: /etc/systemd/system/bassstudio.service
+# 启动: sudo systemctl start bassstudio
+# 开机自启: sudo systemctl enable bassstudio
+# 查看状态: sudo systemctl status bassstudio
+
+[Unit]
+Description=Bass Studio API Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/BassStudio/backend
+EnvironmentFile=/opt/BassStudio/backend/.env
+ExecStart=/opt/BassStudio/backend/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2
+Restart=always
+RestartSec=5
+
+# 安全设置
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
