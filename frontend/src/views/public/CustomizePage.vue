@@ -54,7 +54,7 @@
                 <span class="price">¥{{ store.basePrice.toLocaleString() }}</span>
               </div>
 
-              <el-divider style="border-color: #2a2a2a;" />
+              <el-divider />
 
               <div class="summary-items" v-if="store.selectedCount > 0">
                 <div
@@ -76,7 +76,7 @@
                 <p>请在左侧选择配置选项</p>
               </div>
 
-              <el-divider style="border-color: #2a2a2a;" />
+              <el-divider />
 
               <div class="summary-total">
                 <span>总价</span>
@@ -329,7 +329,7 @@ async function confirmOrder() {
   .selected-badge {
     font-size: 0.8rem;
     color: var(--accent);
-    background: rgba(200, 164, 92, 0.1);
+    background: rgba(31, 107, 79, 0.08);
     padding: 4px 12px;
     border-radius: 20px;
   }
@@ -356,7 +356,7 @@ async function confirmOrder() {
 
   &.selected {
     border-color: var(--accent);
-    background: rgba(200, 164, 92, 0.08);
+    background: rgba(31, 107, 79, 0.06);
     box-shadow: 0 0 0 1px var(--accent);
   }
 

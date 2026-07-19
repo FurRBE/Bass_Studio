@@ -120,7 +120,7 @@
 
         <!-- 收货地址 -->
         <div class="shipping-section" v-if="detailOrder.shipping_address">
-          <el-divider style="border-color: #2a2a2a;" />
+          <el-divider  />
           <h4>收货信息</h4>
           <div class="shipping-info">
             <div class="shipping-row">
@@ -144,7 +144,7 @@
           </div>
         </div>
 
-        <el-divider style="border-color: #2a2a2a;" />
+        <el-divider  />
         <h4>配置详情</h4>
         <div class="config-list" v-if="detailOrder.configuration && detailOrder.configuration.length > 0">
           <div

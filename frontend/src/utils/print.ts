@@ -65,12 +65,12 @@ export function printOrder(order: OrderDetail) {
       text-align: center;
       margin-bottom: 30px;
       padding-bottom: 20px;
-      border-bottom: 2px solid #c8a45c;
+      border-bottom: 2px solid #1F6B4F;
     }
     .header h1 {
       font-size: 24px;
       letter-spacing: 4px;
-      color: #c8a45c;
+      color: #1F6B4F;
       margin-bottom: 4px;
     }
     .header .subtitle {
@@ -84,7 +84,7 @@ export function printOrder(order: OrderDetail) {
       font-size: 14px;
     }
     .order-meta .left span { margin-right: 24px; }
-    .order-meta .right { font-weight: 600; color: #c8a45c; }
+    .order-meta .right { font-weight: 600; color: #1F6B4F; }
     .section {
       margin-bottom: 24px;
     }
@@ -92,7 +92,7 @@ export function printOrder(order: OrderDetail) {
       font-size: 15px;
       margin-bottom: 10px;
       color: #333;
-      border-left: 3px solid #c8a45c;
+      border-left: 3px solid #1F6B4F;
       padding-left: 10px;
     }
     .section p {
@@ -122,7 +122,7 @@ export function printOrder(order: OrderDetail) {
     .total-row td {
       font-weight: 700;
       font-size: 15px;
-      border-top: 2px solid #c8a45c;
+      border-top: 2px solid #1F6B4F;
       padding-top: 12px;
     }
     .footer {
@@ -140,7 +140,7 @@ export function printOrder(order: OrderDetail) {
       font-size: 12px;
       font-weight: 600;
       color: #fff;
-      background: #c8a45c;
+      background: #1F6B4F;
     }
     @media print {
       body { padding: 20px; }

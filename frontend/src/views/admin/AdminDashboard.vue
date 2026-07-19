@@ -136,7 +136,7 @@ onMounted(async () => {
   }
 
   &.orders-icon {
-    background: rgba(200, 164, 92, 0.15);
+    background: rgba(31, 107, 79, 0.1);
     color: var(--accent);
   }
 

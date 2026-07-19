@@ -64,14 +64,15 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(13, 13, 13, 0.85);
+  background: rgba(247, 249, 245, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent;
   transition: all 0.3s ease;
 
   &.scrolled {
     border-bottom-color: var(--border-color);
-    background: rgba(13, 13, 13, 0.95);
+    background: rgba(247, 249, 245, 0.95);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
   }
 }
 
@@ -166,7 +167,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     top: 64px;
     left: 0;
     right: 0;
-    background: var(--bg-secondary);
+    background: var(--bg-card);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
     flex-direction: column;
     padding: 16px;
     gap: 4px;

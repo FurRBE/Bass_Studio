@@ -24,7 +24,7 @@
           <el-icon><Setting /></el-icon>
           <span>配置管理</span>
         </router-link>
-        <el-divider style="border-color: #2a2a2a; margin: 16px 0;" />
+        <el-divider style="margin: 16px 0;" />
         <a class="nav-item back-home" href="/">
           <el-icon><HomeFilled /></el-icon>
           <span>返回前台</span>
@@ -70,7 +70,7 @@ function handleLogout() {
 
 .admin-sidebar {
   width: 240px;
-  background: var(--bg-secondary);
+  background: var(--bg-card);
   border-right: 1px solid var(--border-color);
   padding: 24px 0;
   display: flex;
@@ -124,7 +124,7 @@ function handleLogout() {
 
     &.active,
     &.router-link-exact-active {
-      background: rgba(200, 164, 92, 0.1);
+      background: rgba(31, 107, 79, 0.08);
       color: var(--accent);
     }
 

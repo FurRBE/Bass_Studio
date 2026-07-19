@@ -1,34 +1,43 @@
 // ========== Bass Studio 全局样式 ==========
-// 深色工业风设计
+// Green / Natural Light Theme — 自然 · 清新 · 高级
 
 // CSS 变量
 :root {
-  --bg-primary: #0d0d0d;
-  --bg-secondary: #141414;
-  --bg-card: #1a1a1a;
-  --bg-card-hover: #222222;
-  --bg-input: #1e1e1e;
-  --border-color: #2a2a2a;
-  --border-light: #333333;
+  // 背景
+  --bg-primary: #F7F9F5;       // 暖米白 - 页面主背景
+  --bg-secondary: #EDF2EE;     // 浅灰绿 - 次级区域背景
+  --bg-card: #FFFFFF;          // 纯白 - 卡片与内容区
+  --bg-card-hover: #EEF5EF;    // 极浅绿 - 悬停背景
+  --bg-input: #F7F9F5;         // 暖米白 - 输入框背景
 
-  --text-primary: #e8e4dd;
-  --text-secondary: #9a9690;
-  --text-muted: #6b6762;
+  // 边框
+  --border-color: #DCE7DF;     // 浅灰绿 - 边框/分割线
+  --border-light: #C8D6CC;     // 略深灰绿 - 增强边框
 
-  --accent: #c8a45c;       // 金色 - 主强调色
-  --accent-hover: #d4b46e;
-  --accent-dark: #a07830;
-  --accent-light: #e8d5a8;
+  // 文字
+  --text-primary: #18352B;     // 深墨绿 - 主文字
+  --text-secondary: #5E7068;   // 灰绿 - 副文字
+  --text-muted: #8D9B94;       // 浅灰绿 - 弱化文字
+  --text-on-dark: #FFFFFF;     // 深色背景上的白色文字
 
-  --wood: #8b6914;
-  --wood-light: #b8954a;
-  --metal: #8a8a8a;
-  --metal-light: #b0b0b0;
+  // 主题色 - 深森林绿
+  --accent: #1F6B4F;           // Logo / 主按钮 / 链接 / 重要交互
+  --accent-hover: #18543E;     // 松绿 - hover 状态
+  --accent-dark: #154E38;      // 更深松绿
+  --accent-light: #B7D86A;     // 青柠绿 - CTA / 高亮 / 强调
+  --accent-soft: #A8C3B0;      // 鼠尾草绿 - 辅助模块 / 标签 / 次级元素
 
-  --success: #4caf50;
-  --warning: #ff9800;
-  --danger: #ef5350;
-  --info: #42a5f5;
+  // 中性色 (deprecated wood/metal → green tones)
+  --wood: #6B8B72;             // 木质调绿
+  --wood-light: #96B89F;       // 浅木质调绿
+  --metal: #9EA7A1;            // 金属灰绿
+  --metal-light: #BDC6C0;      // 浅金属灰绿
+
+  // 状态色
+  --success: #3E8E68;          // 成功
+  --warning: #D49A45;          // 警告
+  --danger: #C75C5C;           // 错误
+  --info: #4A9FA8;             // 信息 - 青蓝绿
 }
 
 // 全局重置
@@ -76,11 +85,11 @@ img {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-light);
+  background: #C0CFC5;
   border-radius: 4px;
 
   &:hover {
-    background: var(--text-muted);
+    background: #9BAFA2;
   }
 }
 
@@ -116,26 +125,43 @@ img {
 .section-divider {
   width: 60px;
   height: 3px;
-  background: var(--accent);
+  background: var(--accent-light);
   margin: 0 auto 48px;
 }
 
-// Element Plus 深色主题覆盖
+// ========== Element Plus 浅色主题覆盖 ==========
+
+// 按钮 - Primary
 .el-button--primary {
   --el-button-bg-color: var(--accent);
   --el-button-border-color: var(--accent);
+  --el-button-text-color: #FFFFFF;
   --el-button-hover-bg-color: var(--accent-hover);
   --el-button-hover-border-color: var(--accent-hover);
+  --el-button-hover-text-color: #FFFFFF;
   --el-button-active-bg-color: var(--accent-dark);
   --el-button-active-border-color: var(--accent-dark);
+  --el-button-active-text-color: #FFFFFF;
 }
 
+// 普通按钮
+.el-button {
+  --el-button-bg-color: #FFFFFF;
+  --el-button-border-color: var(--border-color);
+  --el-button-text-color: var(--text-primary);
+  --el-button-hover-bg-color: var(--bg-card-hover);
+  --el-button-hover-border-color: var(--accent);
+  --el-button-hover-text-color: var(--accent);
+}
+
+// 卡片
 .el-card {
   background: var(--bg-card) !important;
   border-color: var(--border-color) !important;
   color: var(--text-primary) !important;
 }
 
+// 输入框
 .el-input__wrapper {
   background: var(--bg-input) !important;
   box-shadow: 0 0 0 1px var(--border-color) !important;
@@ -143,18 +169,36 @@ img {
 
 .el-input__inner {
   color: var(--text-primary) !important;
+
+  &::placeholder {
+    color: var(--text-muted) !important;
+  }
 }
 
+.el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px var(--accent-soft) !important;
+}
+
+.el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 1px var(--accent) !important;
+}
+
+// 表单项标签
 .el-form-item__label {
   color: var(--text-secondary) !important;
 }
 
+// 分页
 .el-pagination {
-  --el-pagination-bg-color: transparent;
+  --el-pagination-bg-color: var(--bg-card);
   --el-pagination-text-color: var(--text-secondary);
-  --el-pagination-button-disabled-bg-color: var(--bg-card);
+  --el-pagination-hover-color: var(--accent);
+  --el-pagination-button-bg-color: var(--bg-card);
+  --el-pagination-button-disabled-bg-color: var(--bg-secondary);
+  --el-pagination-button-disabled-color: var(--text-muted);
 }
 
+// 表格
 .el-table {
   --el-table-bg-color: var(--bg-card);
   --el-table-tr-bg-color: var(--bg-card);
@@ -165,6 +209,11 @@ img {
   --el-table-row-hover-bg-color: var(--bg-card-hover);
 }
 
+.el-table th.el-table__cell {
+  background-color: var(--bg-secondary);
+}
+
+// 对话框
 .el-dialog {
   background: var(--bg-card) !important;
   border: 1px solid var(--border-color) !important;
@@ -178,6 +227,13 @@ img {
   color: var(--text-secondary) !important;
 }
 
+.el-dialog__header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 16px;
+  margin-bottom: 0;
+}
+
+// 下拉选择
 .el-select-dropdown {
   background: var(--bg-card) !important;
   border: 1px solid var(--border-color) !important;
@@ -193,26 +249,70 @@ img {
 
   &.selected {
     color: var(--accent) !important;
+    font-weight: 600;
   }
 }
 
+// Popper
 .el-popper.is-dark {
-  background: var(--bg-card) !important;
+  background: var(--text-primary) !important;
   border: 1px solid var(--border-color) !important;
-  color: var(--text-primary) !important;
+  color: #FFFFFF !important;
 }
 
+// Tag
 .el-tag {
   border: none !important;
 }
 
+// Empty
 .el-empty__description p {
   color: var(--text-muted) !important;
 }
 
+// Menu (侧边栏)
 .el-menu {
   background: transparent !important;
   border: none !important;
+}
+
+// Divider
+.el-divider {
+  border-color: var(--border-color) !important;
+}
+
+// Switch
+.el-switch {
+  --el-switch-on-color: var(--accent);
+  --el-switch-off-color: var(--border-color);
+}
+
+// Skeleton
+.el-skeleton__item {
+  background: var(--bg-secondary) !important;
+}
+
+// Radio/Checkbox
+.el-radio__input.is-checked .el-radio__inner {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.el-checkbox__input.is-checked .el-checkbox__inner {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+// Popconfirm
+.el-popconfirm__action .el-button--primary {
+  --el-button-bg-color: var(--danger);
+  --el-button-border-color: var(--danger);
+}
+
+// Message
+.el-message {
+  --el-message-bg-color: var(--bg-card);
+  border: 1px solid var(--border-color);
 }
 
 // 页面过渡

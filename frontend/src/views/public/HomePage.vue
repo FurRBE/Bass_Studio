@@ -140,7 +140,7 @@ function scrollToIntro() {
   min-height: 90vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #0d0d0d 0%, #1a1410 40%, #0d0d0d 100%);
+  background: linear-gradient(135deg, #EDF2EE 0%, #F7F9F5 40%, #E8F0E6 100%);
   overflow: hidden;
 
   &::before {
@@ -150,7 +150,7 @@ function scrollToIntro() {
     right: -20%;
     width: 800px;
     height: 800px;
-    background: radial-gradient(circle, rgba(200, 164, 92, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(31, 107, 79, 0.06) 0%, transparent 70%);
     border-radius: 50%;
   }
 
@@ -161,7 +161,7 @@ function scrollToIntro() {
     left: -10%;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(200, 164, 92, 0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(31, 107, 79, 0.04) 0%, transparent 70%);
     border-radius: 50%;
   }
 }
@@ -174,8 +174,8 @@ function scrollToIntro() {
       0deg,
       transparent,
       transparent 2px,
-      rgba(255,255,255,0.01) 2px,
-      rgba(255,255,255,0.01) 4px
+      rgba(31,107,79,0.02) 2px,
+      rgba(31,107,79,0.02) 4px
     );
 }
 
@@ -189,7 +189,7 @@ function scrollToIntro() {
 .hero-title {
   font-size: 3.5rem;
   font-weight: 800;
-  background: linear-gradient(180deg, var(--accent-light) 0%, var(--accent) 50%, var(--accent-dark) 100%);
+  background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 50%, var(--accent-dark) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -228,6 +228,7 @@ function scrollToIntro() {
   &:hover {
     border-color: var(--accent) !important;
     color: var(--accent) !important;
+    background: var(--bg-card-hover) !important;
   }
 }
 
@@ -334,7 +335,7 @@ function scrollToIntro() {
     right: 20px;
     font-size: 2.5rem;
     font-weight: 800;
-    color: rgba(200, 164, 92, 0.1);
+    color: rgba(31, 107, 79, 0.08);
     transition: color 0.3s;
   }
 
@@ -381,7 +382,7 @@ function scrollToIntro() {
 
   .showcase-image {
     aspect-ratio: 16/10;
-    background: linear-gradient(135deg, #1a1410, #1a1a1a);
+    background: linear-gradient(135deg, #E8F0E6, #F0F5EE);
     display: flex;
     align-items: center;
     justify-content: center;
