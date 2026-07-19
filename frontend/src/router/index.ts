@@ -58,6 +58,11 @@ const router = createRouter({
           name: 'adminOrders',
           component: () => import('@/views/admin/AdminOrders.vue'),
         },
+        {
+          path: 'options',
+          name: 'adminOptions',
+          component: () => import('@/views/admin/AdminOptions.vue'),
+        },
       ],
     },
     {

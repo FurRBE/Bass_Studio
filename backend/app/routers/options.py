@@ -37,15 +37,24 @@ async def get_all_options(db: AsyncSession = Depends(get_db)):
             "name": opt.name,
             "description": opt.description or "",
             "price": opt.price,
+            "image_url": opt.image_url,
         })
 
-    # 按预定义顺序返回
+    # 按预定义顺序返回，新分类追加在末尾
     result_list = []
     for cat in category_order:
         if cat in categories:
             result_list.append({
                 "category": cat,
                 "options": categories[cat],
+            })
+
+    # 追加未在预定义顺序中的分类
+    for cat, opts in categories.items():
+        if cat not in category_order:
+            result_list.append({
+                "category": cat,
+                "options": opts,
             })
 
     return result_list
@@ -72,6 +81,7 @@ async def get_options_by_category(
                 "name": opt.name,
                 "description": opt.description or "",
                 "price": opt.price,
+                "image_url": opt.image_url,
             }
             for opt in options
         ],

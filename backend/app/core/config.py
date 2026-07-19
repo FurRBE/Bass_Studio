@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     """应用设置"""
 
     APP_NAME: str = "Bass Studio"
-    APP_VERSION: str = "1.0.0"
+    APP_VERSION: str = "2.0.0"
     DEBUG: bool = False
 
     # 数据库 - 使用相对于 backend 目录的路径

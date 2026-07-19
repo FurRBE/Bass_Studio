@@ -31,6 +31,9 @@
                   }"
                   @click="store.selectOption(cat.category, opt)"
                 >
+                  <div class="option-image" v-if="opt.image_url">
+                    <img :src="opt.image_url" :alt="opt.name" />
+                  </div>
                   <div class="option-name">{{ opt.name }}</div>
                   <div class="option-desc" v-if="opt.description">{{ opt.description }}</div>
                   <div class="option-price">
@@ -85,6 +88,7 @@
                 size="large"
                 class="submit-order-btn"
                 :disabled="store.selectedCount === 0"
+                :loading="submittingOrder"
                 @click="handleSubmitOrder"
               >
                 提交订单
@@ -104,13 +108,87 @@
         </div>
       </div>
     </div>
+
+    <!-- 收货地址弹窗 -->
+    <el-dialog
+      v-model="showAddressDialog"
+      title="填写收货信息"
+      width="520px"
+      :close-on-click-modal="false"
+      destroy-on-close
+    >
+      <el-form
+        ref="addressFormRef"
+        :model="addressForm"
+        :rules="addressRules"
+        label-width="80px"
+        label-position="top"
+      >
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-form-item label="收件人姓名" prop="recipient_name">
+              <el-input v-model="addressForm.recipient_name" placeholder="请输入收件人姓名" maxlength="100" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="联系电话" prop="recipient_phone">
+              <el-input v-model="addressForm.recipient_phone" placeholder="请输入联系电话" maxlength="30" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-form-item label="详细地址" prop="address_line1">
+          <el-input v-model="addressForm.address_line1" placeholder="街道、门牌号" maxlength="200" />
+        </el-form-item>
+
+        <el-form-item label="地址补充" prop="address_line2">
+          <el-input v-model="addressForm.address_line2" placeholder="公寓、楼层等（选填）" maxlength="200" />
+        </el-form-item>
+
+        <el-row :gutter="16">
+          <el-col :span="8">
+            <el-form-item label="城市" prop="city">
+              <el-input v-model="addressForm.city" placeholder="城市" maxlength="100" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="省份/州" prop="state">
+              <el-input v-model="addressForm.state" placeholder="省份或州" maxlength="100" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="邮编" prop="zip_code">
+              <el-input v-model="addressForm.zip_code" placeholder="邮政编码" maxlength="20" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-form-item label="备注">
+          <el-input
+            v-model="addressForm.notes"
+            type="textarea"
+            :rows="2"
+            placeholder="如有特殊需求请在此说明（选填）"
+            maxlength="500"
+            show-word-limit
+          />
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <el-button @click="showAddressDialog = false">返回修改</el-button>
+        <el-button type="primary" :loading="submittingOrder" @click="confirmOrder">
+          确认下单
+        </el-button>
+      </template>
+    </el-dialog>
   </DefaultLayout>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { optionsApi } from '@/api/options'
 import { ordersApi } from '@/api/orders'
@@ -123,7 +201,28 @@ const router = useRouter()
 const authStore = useAuthStore()
 const store = useCustomizeStore()
 const categories = ref<OptionsByCategory[]>([])
-const loading = ref(false)
+const submittingOrder = ref(false)
+
+const showAddressDialog = ref(false)
+const addressFormRef = ref<FormInstance>()
+const addressForm = reactive({
+  recipient_name: '',
+  recipient_phone: '',
+  address_line1: '',
+  address_line2: '',
+  city: '',
+  state: '',
+  zip_code: '',
+  notes: '',
+})
+
+const addressRules: FormRules = {
+  recipient_name: [{ required: true, message: '请输入收件人姓名', trigger: 'blur' }],
+  recipient_phone: [{ required: true, message: '请输入联系电话', trigger: 'blur' }],
+  address_line1: [{ required: true, message: '请输入详细地址', trigger: 'blur' }],
+  city: [{ required: true, message: '请输入城市', trigger: 'blur' }],
+  zip_code: [{ required: true, message: '请输入邮编', trigger: 'blur' }],
+}
 
 onMounted(async () => {
   try {
@@ -141,21 +240,40 @@ async function handleSubmitOrder() {
     return
   }
 
-  loading.value = true
-  try {
-    const res = await ordersApi.create({
-      total_price: store.totalPrice,
-      configuration: store.configuration,
-    })
+  showAddressDialog.value = true
+}
 
-    ElMessage.success('订单提交成功！')
-    store.resetAll()
-    router.push(`/orders/${res.data.order_id}`)
-  } catch {
-    // 错误已在拦截器中处理
-  } finally {
-    loading.value = false
-  }
+async function confirmOrder() {
+  if (!addressFormRef.value) return
+  await addressFormRef.value.validate(async (valid) => {
+    if (!valid) return
+    submittingOrder.value = true
+    try {
+      const res = await ordersApi.create({
+        total_price: store.totalPrice,
+        configuration: store.configuration,
+        shipping_address: {
+          recipient_name: addressForm.recipient_name,
+          recipient_phone: addressForm.recipient_phone,
+          address_line1: addressForm.address_line1,
+          address_line2: addressForm.address_line2,
+          city: addressForm.city,
+          state: addressForm.state,
+          zip_code: addressForm.zip_code,
+          notes: addressForm.notes,
+        },
+      })
+
+      ElMessage.success('订单提交成功！')
+      store.resetAll()
+      showAddressDialog.value = false
+      router.push(`/orders/${res.data.order_id}`)
+    } catch {
+      // 错误已在拦截器中处理
+    } finally {
+      submittingOrder.value = false
+    }
+  })
 }
 </script>
 
@@ -240,6 +358,21 @@ async function handleSubmitOrder() {
     border-color: var(--accent);
     background: rgba(200, 164, 92, 0.08);
     box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .option-image {
+    width: 100%;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    background: var(--bg-secondary);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   .option-name {

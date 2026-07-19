@@ -15,6 +15,7 @@ class BassOption(Base):
     name = Column(String(100), nullable=False)
     description = Column(String(500), nullable=True, default="")
     price = Column(Integer, default=0, nullable=False)
+    image_url = Column(String(500), nullable=True, default=None)
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(
         DateTime(timezone=True),

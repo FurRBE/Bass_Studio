@@ -7,6 +7,9 @@
             <el-icon><ArrowLeft /></el-icon> 返回
           </el-button>
           <h1>订单详情</h1>
+          <el-button v-if="order" @click="handlePrint" style="margin-left: auto;">
+            <el-icon><Printer /></el-icon> 打印订单
+          </el-button>
         </div>
 
         <div v-if="loading" class="loading-state">
@@ -36,27 +39,54 @@
             </div>
           </div>
 
-          <!-- 配置详情 -->
-          <div class="config-card">
-            <h3>贝斯配置</h3>
-            <div class="config-items" v-if="order.configuration && order.configuration.length > 0">
-              <div
-                v-for="(item, idx) in order.configuration"
-                :key="idx"
-                class="config-item"
-              >
-                <div class="config-item-header">
-                  <span class="config-cat">{{ CATEGORY_LABELS[item.category] || item.category }}</span>
-                  <span v-if="item.price > 0" class="config-price">
-                    +¥{{ item.price.toLocaleString() }}
-                  </span>
-                  <span v-else class="config-price included">已包含</span>
+          <div class="detail-right">
+            <!-- 收货地址 -->
+            <div class="config-card" v-if="order.shipping_address">
+              <h3>收货信息</h3>
+              <div class="shipping-info">
+                <div class="shipping-row">
+                  <span class="shipping-label">收件人：</span>
+                  <span>{{ order.shipping_address.recipient_name }}</span>
+                  <span class="shipping-label" style="margin-left: 24px;">电话：</span>
+                  <span>{{ order.shipping_address.recipient_phone }}</span>
                 </div>
-                <div class="config-name">{{ item.name }}</div>
+                <div class="shipping-row">
+                  <span class="shipping-label">地址：</span>
+                  <span>{{ order.shipping_address.address_line1 }}
+                    {{ order.shipping_address.address_line2 }}
+                    ，{{ order.shipping_address.city }}
+                    {{ order.shipping_address.state }}
+                    {{ order.shipping_address.zip_code }}</span>
+                </div>
+                <div class="shipping-row" v-if="order.shipping_address.notes">
+                  <span class="shipping-label">备注：</span>
+                  <span>{{ order.shipping_address.notes }}</span>
+                </div>
               </div>
             </div>
-            <div v-else class="empty-config">
-              <p>暂无配置信息</p>
+
+            <!-- 配置详情 -->
+            <div class="config-card">
+              <h3>贝斯配置</h3>
+              <div class="config-items" v-if="order.configuration && order.configuration.length > 0">
+                <div
+                  v-for="(item, idx) in order.configuration"
+                  :key="idx"
+                  class="config-item"
+                >
+                  <div class="config-item-header">
+                    <span class="config-cat">{{ CATEGORY_LABELS[item.category] || item.category }}</span>
+                    <span v-if="item.price > 0" class="config-price">
+                      +¥{{ item.price.toLocaleString() }}
+                    </span>
+                    <span v-else class="config-price included">已包含</span>
+                  </div>
+                  <div class="config-name">{{ item.name }}</div>
+                </div>
+              </div>
+              <div v-else class="empty-config">
+                <p>暂无配置信息</p>
+              </div>
             </div>
           </div>
         </div>
@@ -72,10 +102,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ArrowLeft } from '@element-plus/icons-vue'
+import { ArrowLeft, Printer } from '@element-plus/icons-vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { ordersApi } from '@/api/orders'
 import { CATEGORY_LABELS, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/types'
+import { printOrder } from '@/utils/print'
 import type { OrderDetail } from '@/types'
 
 const route = useRoute()
@@ -95,6 +126,12 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+function handlePrint() {
+  if (order.value) {
+    printOrder(order.value)
+  }
+}
 
 function formatDate(dateStr: string) {
   if (!dateStr) return '-'
@@ -180,6 +217,12 @@ function formatDate(dateStr: string) {
   }
 }
 
+.detail-right {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .config-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -234,6 +277,28 @@ function formatDate(dateStr: string) {
 .config-name {
   color: var(--text-primary);
   font-size: 0.95rem;
+}
+
+// Shipping
+.shipping-info {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.shipping-row {
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .shipping-label {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
 }
 
 .empty-config {

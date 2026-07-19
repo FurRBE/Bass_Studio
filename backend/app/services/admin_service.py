@@ -10,37 +10,54 @@ from ..models.order import Order
 from ..models.user import User
 
 
+def _build_shipping(order: Order) -> dict:
+    return {
+        "recipient_name": order.recipient_name or "",
+        "recipient_phone": order.recipient_phone or "",
+        "address_line1": order.address_line1 or "",
+        "address_line2": order.address_line2 or "",
+        "city": order.city or "",
+        "state": order.state or "",
+        "zip_code": order.zip_code or "",
+        "notes": order.notes or "",
+    }
+
+
 async def get_dashboard_stats(db: AsyncSession) -> dict:
     """获取仪表盘统计数据"""
-    # 用户总数
     user_count_result = await db.execute(
         select(func.count()).select_from(User)
     )
     total_users = user_count_result.scalar() or 0
 
-    # 订单总数
     order_count_result = await db.execute(
         select(func.count()).select_from(Order)
     )
     total_orders = order_count_result.scalar() or 0
 
-    # 待处理订单
     pending_result = await db.execute(
         select(func.count()).select_from(Order).where(Order.status == "pending")
     )
     pending_orders = pending_result.scalar() or 0
 
-    # 已完成订单
     completed_result = await db.execute(
         select(func.count()).select_from(Order).where(Order.status == "completed")
     )
     completed_orders = completed_result.scalar() or 0
+
+    # 配置选项总数
+    from ..models.option import BassOption
+    options_count_result = await db.execute(
+        select(func.count()).select_from(BassOption).where(BassOption.is_active == True)
+    )
+    total_options = options_count_result.scalar() or 0
 
     return {
         "total_users": total_users,
         "total_orders": total_orders,
         "pending_orders": pending_orders,
         "completed_orders": completed_orders,
+        "total_options": total_options,
     }
 
 
@@ -64,11 +81,9 @@ async def get_admin_users(
         query = query.where(search_filter)
         count_query = count_query.where(search_filter)
 
-    # 总数
     count_result = await db.execute(count_query)
     total = count_result.scalar() or 0
 
-    # 分页
     result = await db.execute(
         query.order_by(User.id.desc()).offset(offset).limit(page_size)
     )
@@ -110,10 +125,6 @@ async def delete_user(db: AsyncSession, user_id: int) -> None:
             detail="不能删除管理员账号",
         )
 
-    # 删除该用户的订单
-    await db.execute(
-        select(Order).where(Order.user_id == user_id)
-    )
     orders_result = await db.execute(
         select(Order).where(Order.user_id == user_id)
     )
@@ -149,7 +160,6 @@ async def get_admin_orders(
 
     items = []
     for o in orders:
-        # 获取用户名
         user_result = await db.execute(select(User).where(User.id == o.user_id))
         order_user = user_result.scalar_one_or_none()
 
@@ -166,6 +176,7 @@ async def get_admin_orders(
             "total_price": o.total_price,
             "status": o.status,
             "configuration": config,
+            "shipping_address": _build_shipping(o),
             "created_at": o.created_at.isoformat() if o.created_at else "",
             "updated_at": o.updated_at.isoformat() if o.updated_at else "",
         })
@@ -207,6 +218,7 @@ async def update_order_status(
         "total_price": order.total_price,
         "status": order.status,
         "configuration": config,
+        "shipping_address": _build_shipping(order),
         "created_at": order.created_at.isoformat() if order.created_at else "",
         "updated_at": order.updated_at.isoformat() if order.updated_at else "",
     }
@@ -239,6 +251,7 @@ async def get_admin_order_detail(db: AsyncSession, order_id: int) -> dict:
         "total_price": order.total_price,
         "status": order.status,
         "configuration": config,
+        "shipping_address": _build_shipping(order),
         "created_at": order.created_at.isoformat() if order.created_at else "",
         "updated_at": order.updated_at.isoformat() if order.updated_at else "",
     }

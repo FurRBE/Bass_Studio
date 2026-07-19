@@ -46,13 +46,23 @@
           <span class="stat-label">已完成订单</span>
         </div>
       </div>
+
+      <div class="stat-card">
+        <div class="stat-icon options-icon">
+          <el-icon><Setting /></el-icon>
+        </div>
+        <div class="stat-body">
+          <span class="stat-value">{{ stats.total_options }}</span>
+          <span class="stat-label">配置选项数</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { UserFilled, Document, Clock, CircleCheckFilled } from '@element-plus/icons-vue'
+import { UserFilled, Document, Clock, CircleCheckFilled, Setting } from '@element-plus/icons-vue'
 import { adminApi } from '@/api/admin'
 import type { DashboardStats } from '@/types'
 
@@ -61,6 +71,7 @@ const stats = ref<DashboardStats>({
   total_orders: 0,
   pending_orders: 0,
   completed_orders: 0,
+  total_options: 0,
 })
 const loading = ref(true)
 
@@ -137,6 +148,11 @@ onMounted(async () => {
   &.completed-icon {
     background: rgba(76, 175, 80, 0.15);
     color: var(--success);
+  }
+
+  &.options-icon {
+    background: rgba(156, 39, 176, 0.15);
+    color: #9c27b0;
   }
 }
 

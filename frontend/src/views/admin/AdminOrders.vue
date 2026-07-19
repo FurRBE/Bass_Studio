@@ -58,10 +58,13 @@
             {{ formatDate(row.created_at) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="100">
+        <el-table-column label="操作" width="140">
           <template #default="{ row }">
             <el-button type="primary" size="small" text @click="showDetail(row)">
               详情
+            </el-button>
+            <el-button size="small" text @click="handlePrint(row)">
+              <el-icon><Printer /></el-icon>
             </el-button>
           </template>
         </el-table-column>
@@ -95,9 +98,14 @@
             <span class="detail-label">订单编号</span>
             <span class="detail-value mono">#{{ String(detailOrder.id).padStart(6, '0') }}</span>
           </div>
-          <el-tag :type="ORDER_STATUS_COLORS[detailOrder.status] as any">
-            {{ ORDER_STATUS_LABELS[detailOrder.status] || detailOrder.status }}
-          </el-tag>
+          <div class="detail-header-actions">
+            <el-button size="small" @click="handlePrintDetail">
+              <el-icon><Printer /></el-icon> 打印
+            </el-button>
+            <el-tag :type="ORDER_STATUS_COLORS[detailOrder.status] as any">
+              {{ ORDER_STATUS_LABELS[detailOrder.status] || detailOrder.status }}
+            </el-tag>
+          </div>
         </div>
         <div class="detail-info">
           <div class="detail-row">
@@ -109,6 +117,33 @@
             <span>更新时间：{{ formatDate(detailOrder.updated_at) }}</span>
           </div>
         </div>
+
+        <!-- 收货地址 -->
+        <div class="shipping-section" v-if="detailOrder.shipping_address">
+          <el-divider style="border-color: #2a2a2a;" />
+          <h4>收货信息</h4>
+          <div class="shipping-info">
+            <div class="shipping-row">
+              <span class="shipping-label">收件人：</span>
+              <span>{{ detailOrder.shipping_address.recipient_name }}</span>
+              <span class="shipping-label" style="margin-left: 24px;">电话：</span>
+              <span>{{ detailOrder.shipping_address.recipient_phone }}</span>
+            </div>
+            <div class="shipping-row">
+              <span class="shipping-label">地址：</span>
+              <span>{{ detailOrder.shipping_address.address_line1 }}
+                {{ detailOrder.shipping_address.address_line2 }}
+                ，{{ detailOrder.shipping_address.city }}
+                {{ detailOrder.shipping_address.state }}
+                {{ detailOrder.shipping_address.zip_code }}</span>
+            </div>
+            <div class="shipping-row" v-if="detailOrder.shipping_address.notes">
+              <span class="shipping-label">备注：</span>
+              <span>{{ detailOrder.shipping_address.notes }}</span>
+            </div>
+          </div>
+        </div>
+
         <el-divider style="border-color: #2a2a2a;" />
         <h4>配置详情</h4>
         <div class="config-list" v-if="detailOrder.configuration && detailOrder.configuration.length > 0">
@@ -131,8 +166,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { Printer } from '@element-plus/icons-vue'
 import { adminApi } from '@/api/admin'
 import { CATEGORY_LABELS, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/types'
+import { printOrder } from '@/utils/print'
 import type { OrderListItem, OrderDetail } from '@/types'
 
 const orders = ref<OrderListItem[]>([])
@@ -159,7 +196,6 @@ async function fetchOrders() {
     orders.value = res.data.items
     total.value = res.data.total
   } catch {
-    // 错误已在拦截器中处理
   } finally {
     loading.value = false
   }
@@ -176,7 +212,6 @@ async function handleStatusChange(orderId: number, newStatus: string) {
     ElMessage.success('订单状态已更新')
     fetchOrders()
   } catch {
-    // 错误已在拦截器中处理
   }
 }
 
@@ -186,7 +221,20 @@ async function showDetail(row: OrderListItem) {
     detailOrder.value = res.data
     dialogVisible.value = true
   } catch {
-    // 错误已在拦截器中处理
+  }
+}
+
+async function handlePrint(row: OrderListItem) {
+  try {
+    const res = await adminApi.getOrderDetail(row.id)
+    printOrder(res.data)
+  } catch {
+  }
+}
+
+function handlePrintDetail() {
+  if (detailOrder.value) {
+    printOrder(detailOrder.value)
   }
 }
 
@@ -272,6 +320,12 @@ function formatDate(dateStr: string) {
       font-family: monospace;
     }
   }
+
+  .detail-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 }
 
 .detail-info {
@@ -281,6 +335,35 @@ function formatDate(dateStr: string) {
     margin-bottom: 8px;
     color: var(--text-muted);
     font-size: 0.9rem;
+  }
+}
+
+// Shipping section
+.shipping-section {
+  h4 {
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+}
+
+.shipping-info {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.shipping-row {
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .shipping-label {
+    color: var(--text-muted);
+    font-size: 0.82rem;
   }
 }
 

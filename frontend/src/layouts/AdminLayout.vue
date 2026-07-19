@@ -20,6 +20,10 @@
           <el-icon><Document /></el-icon>
           <span>订单管理</span>
         </router-link>
+        <router-link to="/admin/options" class="nav-item" active-class="active">
+          <el-icon><Setting /></el-icon>
+          <span>配置管理</span>
+        </router-link>
         <el-divider style="border-color: #2a2a2a; margin: 16px 0;" />
         <a class="nav-item back-home" href="/">
           <el-icon><HomeFilled /></el-icon>
@@ -40,7 +44,14 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-
+import {
+  DataAnalysis,
+  User,
+  Document,
+  Setting,
+  HomeFilled,
+  SwitchButton,
+} from '@element-plus/icons-vue'
 const router = useRouter()
 const authStore = useAuthStore()
 

@@ -16,6 +16,15 @@ class Order(Base):
     total_price = Column(Integer, default=0, nullable=False)
     status = Column(String(20), default="pending", nullable=False, index=True)
     configuration_json = Column(Text, nullable=True, default="{}")
+    # 收货地址
+    recipient_name = Column(String(100), nullable=True, default="")
+    recipient_phone = Column(String(30), nullable=True, default="")
+    address_line1 = Column(String(200), nullable=True, default="")
+    address_line2 = Column(String(200), nullable=True, default="")
+    city = Column(String(100), nullable=True, default="")
+    state = Column(String(100), nullable=True, default="")
+    zip_code = Column(String(20), nullable=True, default="")
+    notes = Column(Text, nullable=True, default="")
     created_at = Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

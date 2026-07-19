@@ -31,11 +31,48 @@ export interface BassOption {
   name: string
   description: string
   price: number
+  image_url?: string | null
+}
+
+export interface BassOptionWithStatus extends BassOption {
+  is_active: boolean
+  created_at: string
 }
 
 export interface OptionsByCategory {
   category: string
   options: BassOption[]
+}
+
+// Admin
+export interface AdminOptionListResponse {
+  total: number
+  page: number
+  page_size: number
+  items: BassOptionWithStatus[]
+}
+
+export interface CreateOptionRequest {
+  category: string
+  name: string
+  description?: string
+  price: number
+  image_url?: string | null
+  is_active?: boolean
+}
+
+export interface UpdateOptionRequest {
+  category?: string
+  name?: string
+  description?: string
+  price?: number
+  image_url?: string | null
+  is_active?: boolean
+}
+
+export interface CategoryItem {
+  name: string
+  count: number
 }
 
 // ========== 订单 ==========
@@ -46,9 +83,21 @@ export interface OrderItem {
   price: number
 }
 
+export interface ShippingAddress {
+  recipient_name: string
+  recipient_phone: string
+  address_line1: string
+  address_line2: string
+  city: string
+  state: string
+  zip_code: string
+  notes: string
+}
+
 export interface CreateOrderRequest {
   total_price: number
   configuration: OrderItem[]
+  shipping_address?: ShippingAddress
 }
 
 export interface OrderDetail {
@@ -58,6 +107,7 @@ export interface OrderDetail {
   total_price: number
   status: string
   configuration: OrderItem[]
+  shipping_address?: ShippingAddress | null
   created_at: string
   updated_at: string
 }
@@ -69,6 +119,7 @@ export interface OrderListItem {
   total_price: number
   status: string
   configuration?: OrderItem[]
+  shipping_address?: ShippingAddress | null
   created_at: string
   updated_at: string
 }
@@ -86,6 +137,7 @@ export interface DashboardStats {
   total_orders: number
   pending_orders: number
   completed_orders: number
+  total_options: number
 }
 
 export interface AdminUserItem {
